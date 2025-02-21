@@ -84,6 +84,7 @@ export const styles = StyleSheet.create({
     backgroundColor: '#f9f9f9',
     borderBottomColor: '#ccc',
     borderBottomWidth: 1,
+    paddingTop: 150,
   },
   image: {
     width: 200,
