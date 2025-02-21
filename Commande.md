@@ -28,3 +28,6 @@ npm install @react-native-async-storage/async-storage
 # Ajouter le système de route vers le .env (l'ajouter à la racine du projet)
 npm install react-native-dotenv
 
+# Menu déroulant
+npx expo install react-native-collapsible
+

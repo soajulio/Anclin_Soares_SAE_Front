@@ -43,4 +43,55 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center'
   },
+  itemContainer: {
+    backgroundColor: "#fff",
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 5,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+    width: "80%",
+  },
+  nomPlante: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+  },
+  details: {
+    color: "#555",
+  },
+  button: {
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginBottom: 20,
+    width: '80%',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  headerContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 20,
+    backgroundColor: '#f9f9f9',
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+  },
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: '#f0f0f0',
+  }
+  
+  
 });
