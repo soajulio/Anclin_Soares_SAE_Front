@@ -2,6 +2,7 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
 import * as FileSystem from 'expo-file-system';
+import { identifyPlant } from "../services/plantIdService";
 
 export default function CameraComponent() {
   const [facing, setFacing] = useState<CameraType>("back");
@@ -46,7 +47,7 @@ export default function CameraComponent() {
     }
   };
 
-  // Fonction pour prendre une photo
+  // Fonction pour prendre une photo et envoyer à l'API
   const takePicture = async () => {
     if (cameraRef.current) {
       try {
@@ -59,13 +60,14 @@ export default function CameraComponent() {
 
         console.log("Photo prise:", pictureData.uri);
 
-        // Sauvegarder la photo dans le dossier "imgs"
-        savePicture(pictureData.uri);
+        // Sauvegarde locale
+        await savePicture(pictureData.uri);
 
-        // Mettre à jour l'état avec l'URI de la photo prise
-        setPhotoUri(pictureData.uri);
+        // Identification avec PlantID
+        const result = await identifyPlant(pictureData.uri);
+        console.log("Résultat de l'identification :", result);
       } catch (error) {
-        console.error("Erreur lors de la prise de photo:", error);
+        console.error("Erreur lors de la prise de photo :", error);
       }
     }
   };
