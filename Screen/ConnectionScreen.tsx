@@ -31,7 +31,7 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
     setAlertMessage('');
 
     try {
-      const response = await axios.post('http://172.20.10.6:5000/check_credentials', {
+      const response = await axios.post('http://192.168.1.162:5000/check_credentials', {
         username: username,
         password: password,
       });
@@ -67,7 +67,7 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
     setAlertMessage('');
 
     try {
-      const response = await axios.post('http://172.20.10.6:5000/add_user', {
+      const response = await axios.post('http://192.168.1.162:5000/add_user', {
         username: username,
         password: password,
         email: email,
