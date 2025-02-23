@@ -1,6 +1,6 @@
 import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
-import { StyleSheet, Text, TouchableOpacity, View, Image } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from "react-native";
 import * as FileSystem from 'expo-file-system';
 import { identifyPlant } from "../services/plantIdService";
 
@@ -8,6 +8,7 @@ export default function CameraComponent() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
   const [photoUri, setPhotoUri] = useState<string | null>(null);  // État pour stocker l'URI de la photo
+  const [plantData, setPlantData] = useState<any>(null);  // État pour stocker les données de l'API
   const cameraRef = useRef<CameraView>(null);
 
   // Vérification des permissions
@@ -26,7 +27,6 @@ export default function CameraComponent() {
   // Fonction pour sauvegarder l'image dans un dossier "imgs"
   const savePicture = async (uri: string) => {
     try {
-      // Créer un dossier "imgs" s'il n'existe pas
       const imgsDirectory = FileSystem.documentDirectory + 'imgs/';
       const directoryInfo = await FileSystem.getInfoAsync(imgsDirectory);
 
@@ -34,13 +34,10 @@ export default function CameraComponent() {
         await FileSystem.makeDirectoryAsync(imgsDirectory);
       }
 
-      // Créer un nom de fichier unique pour la photo (par exemple, timestamp)
       const fileName = `photo_${Date.now()}.jpg`;
       const fileUri = imgsDirectory + fileName;
 
-      // Copier la photo dans le dossier "imgs"
       await FileSystem.copyAsync({ from: uri, to: fileUri });
-
       console.log('Photo sauvegardée à :', fileUri);
     } catch (error) {
       console.error('Erreur lors de la sauvegarde de la photo:', error);
@@ -59,6 +56,7 @@ export default function CameraComponent() {
         }
 
         console.log("Photo prise:", pictureData.uri);
+        setPhotoUri(pictureData.uri);  // Mettre à jour l'URI de la photo
 
         // Sauvegarde locale
         await savePicture(pictureData.uri);
@@ -66,6 +64,9 @@ export default function CameraComponent() {
         // Identification avec PlantID
         const result = await identifyPlant(pictureData.uri);
         console.log("Résultat de l'identification :", result);
+
+        // Mise à jour des données de la plante
+        setPlantData(result);
       } catch (error) {
         console.error("Erreur lors de la prise de photo :", error);
       }
@@ -78,7 +79,7 @@ export default function CameraComponent() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
       {/* Affichage de la caméra */}
       <CameraView ref={cameraRef} style={styles.camera} facing={facing} />
 
@@ -92,16 +93,30 @@ export default function CameraComponent() {
         </TouchableOpacity>
       </View>
 
-      {/* Affichage de la photo prise (si disponible) */}
+      {/* Affichage de la photo prise */}
       {photoUri && (
         <Image source={{ uri: photoUri }} style={styles.photo} />
       )}
-    </View>
+
+      {/* Affichage des données de la plante si disponibles */}
+      {plantData && (
+        <View style={styles.plantInfo}>
+          <Text style={styles.plantName}>Nom: {plantData?.plantName}</Text>
+          <Text>Confiance: {plantData?.probability}</Text>
+          {/* Affiche d'autres informations ici si nécessaire */}
+        </View>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: "center", alignItems: "center" },
+  container: { 
+    flexGrow: 1,  // Permet à ScrollView de se développer pour couvrir l'écran
+    justifyContent: "center", 
+    alignItems: "center",
+    paddingBottom: 20, // Ajouter un padding si nécessaire
+  },
   message: { textAlign: "center", paddingBottom: 10 },
   camera: { width: 300, height: 300 }, // Ajuste la taille pour bien afficher la caméra
   controls: { flexDirection: "row", justifyContent: "space-around", width: "100%", padding: 20 },
@@ -114,5 +129,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "#ddd",
+  },
+  plantInfo: {
+    alignItems: "center",
+    marginTop: 20,
+  },
+  plantName: {
+    fontWeight: "bold",
+    fontSize: 16,
   },
 });
