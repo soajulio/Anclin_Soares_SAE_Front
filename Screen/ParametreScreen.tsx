@@ -1,17 +1,33 @@
-import React from "react";
-import { View, Text, Switch } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, Button, Alert } from "react-native";
 import { styles } from "../styles/styles";
+import { useServerIp } from "../context/ServerIpContext";
 
 const ParametreScreen: React.FC = () => {
-  const [isEnabled, setIsEnabled] = React.useState(false);
+  const { serverIp, setServerIp } = useServerIp();
+  const [ipAdresse, setIpAdresse] = useState(serverIp);
 
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
+  const sauvegarderIP = () => {
+    if (ipAdresse.trim() === "") {
+      Alert.alert("Erreur", "Veuillez entrer une adresse IP valide.");
+      return;
+    }
+    setServerIp(ipAdresse);
+    Alert.alert("Succès", "Adresse IP sauvegardée !");
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Paramètres</Text>
-        <Text>Activer une option :</Text>
-        <Switch value={isEnabled} onValueChange={toggleSwitch} />
+      <Text>Adresse IP du serveur :</Text>
+      <TextInput
+        style={styles.input}
+        value={ipAdresse}
+        onChangeText={setIpAdresse}
+        placeholder="Entrez l'adresse IP"
+        keyboardType="numbers-and-punctuation"
+      />
+      <Button title="Sauvegarder" onPress={sauvegarderIP} />
     </View>
   );
 };

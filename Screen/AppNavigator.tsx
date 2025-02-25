@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "./HomeScreen";
 import ConnectionScreen from "./ConnectionScreen";
 import HistoriqueScreen from "./HistoriqueScreen";
+import ParametreScreen from "./ParametreScreen";
 import { useAuth } from "../components/AuthContext"; 
 
 const Tab = createBottomTabNavigator();
@@ -32,6 +33,15 @@ const AppNavigator: React.FC = () => {
         options={{
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="grid-outline" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Paramètres"
+        component={ParametreScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings-outline" color={color} size={size} />
           ),
         }}
       />
