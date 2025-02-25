@@ -6,6 +6,7 @@ import { styles } from "../styles/styles";
 import axios from "axios";
 import Collapsible from 'react-native-collapsible';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView, { Marker } from "react-native-maps"; // Importer MapView et Marker
 
 const Historique: React.FC = () => {
   const [dataHistorique, setDataHistorique] = useState<any[]>([]);
@@ -13,7 +14,6 @@ const Historique: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [serverIp, setServerIp] = useState<string | null>(null);
 
-  // Charger l'IP sauvegardée
   useEffect(() => {
     const chargerIP = async () => {
       try {
@@ -30,7 +30,6 @@ const Historique: React.FC = () => {
     chargerIP();
   }, []);
 
-  // Charger l'historique lorsque l'IP est définie
   useEffect(() => {
     if (serverIp) {
       chargerHistorique();
@@ -90,7 +89,7 @@ const Historique: React.FC = () => {
 
       {dataHistorique.map((item, index) => {
         const imageUri = item.image
-          ? item.image.startsWith("/9j/")  // Détecter JPEG (Base64 commence par /9j/)
+          ? item.image.startsWith("/9j/")  
             ? `data:image/jpeg;base64,${item.image}`
             : `data:image/png;base64,${item.image}`
           : null;
@@ -106,20 +105,42 @@ const Historique: React.FC = () => {
             </TouchableOpacity>
 
             <Collapsible collapsed={!activeSections.includes(index)}>
-              <Text style={styles.details}>Latitude : {item.latitude}</Text>
-              <Text style={styles.details}>Longitude : {item.longitude}</Text>
+              {/* Carte remplaçant les textes de latitude et longitude */}
+              {item.latitude && item.longitude && (
+                <View style={{ height: 200, width: "100%", marginVertical: 10 }}>
+                  <MapView
+                    style={{ flex: 1 }}
+                    initialRegion={{
+                      latitude: parseFloat(item.latitude),
+                      longitude: parseFloat(item.longitude),
+                      latitudeDelta: 0.01, // Zoom plus serré
+                      longitudeDelta: 0.01,
+                    }}
+                  >
+                    <Marker
+                      coordinate={{
+                        latitude: parseFloat(item.latitude),
+                        longitude: parseFloat(item.longitude),
+                      }}
+                      title={item.plante_nom}
+                      description={`Score : ${scorePercentage}%`}
+                    />
+                  </MapView>
+                </View>
+              )}
+
               <Text style={styles.details}>Score : {scorePercentage}%</Text>
+
               {imageUri ? (
-                <>
-                  <Image
-                    source={{ uri: imageUri }}
-                    style={styles.image}
-                    resizeMode="contain"
-                  />
-                </>
+                <Image
+                  source={{ uri: imageUri }}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
               ) : (
                 <Text style={styles.alertText}>Image non disponible</Text>
               )}
+
               {item.url && item.url !== "None" && (
                 <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
                   <Text style={[styles.details, { color: 'blue', textDecorationLine: 'underline' }]}>
