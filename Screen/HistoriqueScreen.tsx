@@ -6,7 +6,7 @@ import { styles } from "../styles/styles";
 import axios from "axios";
 import Collapsible from 'react-native-collapsible';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MapView, { Marker } from "react-native-maps"; // Importer MapView et Marker
+import MapView, { Marker } from "react-native-maps";
 
 const Historique: React.FC = () => {
   const [dataHistorique, setDataHistorique] = useState<any[]>([]);

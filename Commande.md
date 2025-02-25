@@ -31,3 +31,5 @@ npm install react-native-dotenv
 # Menu déroulant
 npx expo install react-native-collapsible
 
+# Carte pour l'historique
+npm install react-native-maps
