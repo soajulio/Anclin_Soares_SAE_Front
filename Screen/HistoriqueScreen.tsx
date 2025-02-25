@@ -1,24 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Text, View, ScrollView, Image, TouchableOpacity, LayoutAnimation, Linking, RefreshControl 
-} from "react-native";
+import { Text, View, FlatList, Image, TouchableOpacity, Alert, LayoutAnimation, UIManager, Platform } from "react-native";
 import { styles } from "../styles/styles";
 import axios from "axios";
 import Collapsible from 'react-native-collapsible';
 
+// Images locales avec require()
+const images = {
+  rose: require("../assets/images/rose.jpg"),
+  orchidee: require("../assets/images/orchidee.jpg"),
+  tulipe: require("../assets/images/tulipe.jpg"),
+};
+
 const Historique: React.FC = () => {
   const [dataHistorique, setDataHistorique] = useState<any[]>([]);
   const [activeSections, setActiveSections] = useState<number[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    chargerHistorique();
+    const chargerIP = async () => {
+      try {
+        const savedIP = await AsyncStorage.getItem("server_ip");
+        if (savedIP) {
+          setServerIp(savedIP);
+        } else {
+          Alert.alert("Erreur", "Aucune adresse IP enregistrée.");
+        }
+      } catch (error) {
+        console.error("Erreur lors du chargement de l'IP :", error);
+      }
+    };
+    chargerIP();
   }, []);
 
+  useEffect(() => {
+    if (serverIp) {
+      chargerHistorique();
+    }
+  }, [serverIp]);
+
   const chargerHistorique = async () => {
-    setRefreshing(true);
     try {
-      const response = await axios.get("http://192.168.1.6:5000/get_historique");
+      const response = await axios.get("http://172.20.10.14:5000/get_historique");
       if (response.status === 200) {
         setDataHistorique(response.data);
       }
@@ -38,77 +59,78 @@ const Historique: React.FC = () => {
     );
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear();
-    const hours = date.getHours().toString().padStart(2, '0');
-    const minutes = date.getMinutes().toString().padStart(2, '0');
-  
-    return `${day}/${month}/${year} à ${hours}:${minutes}`;
-  };
+  const renderItem = ({ item, index }: any) => {
+  console.log("Image Base64 : ", item.image?.substring(0, 50));
 
-  const handleUrlPress = (url: string) => {
-    Linking.openURL(url).catch((err) => console.error("Erreur lors de l'ouverture de l'URL : ", err));
-  };
+  // Détection du type d'image
+  const imageUri = item.image
+    ? item.image.startsWith("/9j/")  // JPEG commence  par /9j/
+      ? `data:image/jpeg;base64,${item.image}`
+      : `data:image/png;base64,${item.image}`
+    : null;
 
   return (
-    <ScrollView
-      contentContainerStyle={{ paddingBottom: 20 }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={chargerHistorique} />
-      }
-      collapsable={false} 
-    >
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>Historique des identifications</Text>
-      </View>
+    <View style={styles.itemContainer}>
+      <TouchableOpacity onPress={() => toggleSection(index)}>
+        <Text style={styles.nomPlante}>{item.plante_nom}</Text>
+      </TouchableOpacity>
+      <Collapsible collapsed={!activeSections.includes(index)}>
+        <Text style={styles.details}>Latitude : {item.latitude}</Text>
+        <Text style={styles.details}>Longitude : {item.longitude}</Text>
+        <Text style={styles.details}>Score : {item.prediction_score}</Text>
+        <Text style={styles.details}>URL : {item.url}</Text>
+        {imageUri ? (
+          <Image
+            source={{ uri: imageUri }}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        ) : (
+          <Text style={styles.alertText}>Image non disponible</Text>
+        )}
+      </Collapsible>
+    </View>
+  );
+};
 
-      {dataHistorique.map((item, index) => {
-        const imageUri = item.image
-          ? item.image.startsWith("/9j/")  // Détecter JPEG (Base64 commence par /9j/)
-            ? `data:image/jpeg;base64,${item.image}`
-            : `data:image/png;base64,${item.image}`
-          : null;
 
-        const scorePercentage = (item.prediction_score * 100).toFixed(1);
+  const renderHeader = () => (
+    <View style={styles.headerContainer}>
+      <Text style={styles.title}>Ajouter dans la base de données</Text>
 
-        return (
-          <View key={index} style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => toggleSection(index)}>
-              <Text style={styles.nomPlante}>
-                {`${formatDate(item.timestamp)} \n${item.plante_nom}`}
-              </Text>
-            </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => ajouterDansLaBase("Rose", images.rose)}
+      >
+        <Text style={styles.buttonText}>Ajouter Rose</Text>
+      </TouchableOpacity>
 
-            <Collapsible collapsed={!activeSections.includes(index)}>
-              <Text style={styles.details}>Latitude : {item.latitude}</Text>
-              <Text style={styles.details}>Longitude : {item.longitude}</Text>
-              <Text style={styles.details}>Score : {scorePercentage}%</Text>
-              {imageUri ? (
-                <>
-                  <Image
-                    source={{ uri: imageUri }}
-                    style={styles.image}
-                    resizeMode="contain"
-                  />
-                </>
-              ) : (
-                <Text style={styles.alertText}>Image non disponible</Text>
-              )}
-              {item.url && item.url !== "None" && (
-                <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
-                  <Text style={[styles.details, { color: 'blue', textDecorationLine: 'underline' }]}>
-                    Voir image de la fleur prédite
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </Collapsible>
-          </View>
-        );
-      })}
-    </ScrollView>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => ajouterDansLaBase("Orchidée", images.orchidee)}
+      >
+        <Text style={styles.buttonText}>Ajouter Orchidée</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => ajouterDansLaBase("Tulipe", images.tulipe)}
+      >
+        <Text style={styles.buttonText}>Ajouter Tulipe</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.title}>Historique des identifications</Text>
+    </View>
+  );
+
+  return (
+    <FlatList
+      data={dataHistorique}
+      renderItem={renderItem}
+      keyExtractor={(item, index) => index.toString()}
+      ListHeaderComponent={renderHeader} 
+      contentContainerStyle={styles.container}
+    />
   );
 };
 
