@@ -8,14 +8,14 @@ const HISTORIQUE_API_URL = "http://172.20.10.6:5000/add_historique";
 
 export const identifyPlant = async (imageUri: string) => {
   try {
-    // Demander l'autorisation de localisation
+    // Request location permission
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status !== "granted") {
-      console.warn("Permission de localisation refusée");
+      console.warn("Location permission denied");
       return null;
     }
 
-    // Obtenir la position GPS en sécurité
+    // Get GPS location safely
     let latitude = null;
     let longitude = null;
 
@@ -23,17 +23,17 @@ export const identifyPlant = async (imageUri: string) => {
       const location = await Location.getCurrentPositionAsync({});
       latitude = location.coords.latitude;
       longitude = location.coords.longitude;
-      console.log(`Localisation récupérée : ${latitude}, ${longitude}`);
+      console.log(`Location retrieved: ${latitude}, ${longitude}`);
     } catch (locationError) {
-      console.warn("Impossible d'obtenir la localisation :", locationError);
+      console.warn("Unable to retrieve location:", locationError);
     }
 
-    // Convertir l'image en base64
+    // Convert image to base64
     const imageBase64 = await FileSystem.readAsStringAsync(imageUri, {
       encoding: FileSystem.EncodingType.Base64,
     });
 
-    // Envoi à l'API Plant ID
+    // Send to Plant ID API
     const response = await axios.post(
       PLANT_ID_URL,
       {
@@ -51,12 +51,12 @@ export const identifyPlant = async (imageUri: string) => {
       }
     );
 
-    console.log("Résultat de l'identification :", response.data);
+    console.log("Identification result:", response.data);
 
-    // Vérifier si c'est bien une plante
+    // Check if it's a plant
     const isPlant = response.data?.result?.is_plant?.binary ?? false;
 
-    // Déterminer la meilleure correspondance (toujours prendre la plus haute)
+    // Determine the best match
     let planteNom = "Plante inconnue";
     let predictionScore = 0;
     let imageUrl = null;
@@ -64,16 +64,16 @@ export const identifyPlant = async (imageUri: string) => {
     const suggestions = response.data?.result?.classification?.suggestions || [];
 
     if (suggestions.length > 0) {
-      const bestMatch = suggestions[0]; // Prend la meilleure correspondance même si elle est faible
+      const bestMatch = suggestions[0]; // Always take the highest match
 
-      planteNom = bestMatch.plant_name || "Plante inconnue";
+      planteNom = bestMatch.name || "Plante inconnue"; // Use 'name' instead of 'plant_name'
       predictionScore = typeof bestMatch.probability === "number" ? bestMatch.probability : 0;
       imageUrl = bestMatch?.similar_images?.[0]?.url || null;
     }
 
-    console.log(`Plante identifiée : ${planteNom} (${(predictionScore * 100).toFixed(2)}%)`);
+    console.log(`Identified plant: ${planteNom} (${(predictionScore * 100).toFixed(2)}%)`);
 
-    // Enregistrement dans la base de données
+    // Save to database
     try {
       await axios.post(HISTORIQUE_API_URL, {
         plante_nom: planteNom,
@@ -84,14 +84,14 @@ export const identifyPlant = async (imageUri: string) => {
         url: imageUrl,
       });
 
-      console.log("Historique ajouté avec succès.");
+      console.log("Successfully added to history.");
     } catch (historyError) {
-      console.error("Erreur lors de l'ajout à l'historique :", historyError);
+      console.error("Error adding to history:", historyError);
     }
 
     return response.data;
   } catch (error) {
-    console.error("Erreur lors de l'identification de la plante :", error);
+    console.error("Error identifying plant:", error);
     return null;
   }
 };
