@@ -4,7 +4,7 @@ import * as Location from "expo-location";
 import { PLANT_ID_API_KEY } from "@env";
 
 const PLANT_ID_URL = "https://plant.id/api/v3/identification";
-const HISTORIQUE_API_URL = "http://172.20.10.6:5000/add_historique";
+const HISTORIQUE_API_URL = "http://192.168.1.6:5000/add_historique";
 
 export const identifyPlant = async (imageUri: string) => {
   try {
@@ -73,20 +73,24 @@ export const identifyPlant = async (imageUri: string) => {
 
     console.log(`Identified plant: ${planteNom} (${(predictionScore * 100).toFixed(2)}%)`);
 
-    // Save to database
-    try {
-      await axios.post(HISTORIQUE_API_URL, {
-        plante_nom: planteNom,
-        latitude,
-        longitude,
-        prediction_score: predictionScore,
-        image: imageBase64,
-        url: imageUrl,
-      });
+    // Save to database only if prediction score is greater than 45%
+    if (predictionScore > 0.45) {
+      try {
+        await axios.post(HISTORIQUE_API_URL, {
+          plante_nom: planteNom,
+          latitude,
+          longitude,
+          prediction_score: predictionScore,
+          image: imageBase64,
+          url: imageUrl,
+        });
 
-      console.log("Successfully added to history.");
-    } catch (historyError) {
-      console.error("Error adding to history:", historyError);
+        console.log("Successfully added to history.");
+      } catch (historyError) {
+        console.error("Error adding to history:", historyError);
+      }
+    } else {
+      console.log("Prediction score too low to save to history.");
     }
 
     return response.data;

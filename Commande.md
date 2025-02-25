@@ -31,3 +31,6 @@ npm install react-native-dotenv
 # Menu déroulant
 npx expo install react-native-collapsible
 
+
+npm install react-native-paper
+

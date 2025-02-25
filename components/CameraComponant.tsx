@@ -7,11 +7,11 @@ import { identifyPlant } from "../services/plantIdService";
 export default function CameraComponent() {
   const [facing, setFacing] = useState<CameraType>("back");
   const [permission, requestPermission] = useCameraPermissions();
-  const [photoUri, setPhotoUri] = useState<string | null>(null);  // État pour stocker l'URI de la photo
-  const [plantData, setPlantData] = useState<any>(null);  // État pour stocker les données de l'API
+  const [photoUri, setPhotoUri] = useState<string | null>(null);  // State to store the photo URI
+  const [plantData, setPlantData] = useState<any>(null);  // State to store API data
   const cameraRef = useRef<CameraView>(null);
 
-  // Vérification des permissions
+  // Check permissions
   if (!permission) return <View />;
   if (!permission.granted) {
     return (
@@ -24,7 +24,7 @@ export default function CameraComponent() {
     );
   }
 
-  // Fonction pour sauvegarder l'image dans un dossier "imgs"
+  // Function to save the image in an "imgs" folder
   const savePicture = async (uri: string) => {
     try {
       const imgsDirectory = FileSystem.documentDirectory + 'imgs/';
@@ -38,52 +38,52 @@ export default function CameraComponent() {
       const fileUri = imgsDirectory + fileName;
 
       await FileSystem.copyAsync({ from: uri, to: fileUri });
-      console.log('Photo sauvegardée à :', fileUri);
+      console.log('Photo saved at:', fileUri);
     } catch (error) {
-      console.error('Erreur lors de la sauvegarde de la photo:', error);
+      console.error('Error saving photo:', error);
     }
   };
 
-  // Fonction pour prendre une photo et envoyer à l'API
+  // Function to take a picture and send it to the API
   const takePicture = async () => {
     if (cameraRef.current) {
       try {
         const pictureData = await cameraRef.current.takePictureAsync();
 
         if (!pictureData || !pictureData.uri) {
-          console.error("Aucune photo n'a été prise.");
+          console.error("No photo was taken.");
           return;
         }
 
-        console.log("Photo prise:", pictureData.uri);
-        setPhotoUri(pictureData.uri);  // Mettre à jour l'URI de la photo
+        console.log("Photo taken:", pictureData.uri);
+        setPhotoUri(pictureData.uri);  // Update the photo URI
 
-        // Sauvegarde locale
+        // Save locally
         await savePicture(pictureData.uri);
 
-        // Identification avec PlantID
+        // Identification with PlantID
         const result = await identifyPlant(pictureData.uri);
-        console.log("Résultat de l'identification :", result);
+        console.log("Identification result:", result);
 
-        // Mise à jour des données de la plante
+        // Update plant data
         setPlantData(result);
       } catch (error) {
-        console.error("Erreur lors de la prise de photo :", error);
+        console.error("Error taking photo:", error);
       }
     }
   };
 
-  // Fonction pour changer de caméra (avant/arrière)
+  // Function to toggle camera (front/back)
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      {/* Affichage de la caméra */}
+      {/* Camera display */}
       <CameraView ref={cameraRef} style={styles.camera} facing={facing} />
 
-      {/* Boutons */}
+      {/* Buttons */}
       <View style={styles.controls}>
         <TouchableOpacity onPress={toggleCameraFacing} style={styles.button}>
           <Text style={styles.text}>Flip Camera</Text>
@@ -93,20 +93,30 @@ export default function CameraComponent() {
         </TouchableOpacity>
       </View>
 
-      {/* Affichage de la photo prise */}
+      {/* Display the taken photo */}
       {photoUri && (
         <Image source={{ uri: photoUri }} style={styles.photo} />
       )}
 
-      {/* Affichage des données de la plante si disponibles */}
-      {plantData && plantData.result?.classification?.suggestions?.length > 0 && (
+      {/* Display plant data if available */}
+      {plantData && (
         <View style={styles.plantInfo}>
-          <Text style={styles.plantName}>
-            Nom: {plantData.result.classification.suggestions[0].name}
-          </Text>
-          <Text>
-            Confiance: {Math.round(plantData.result.classification.suggestions[0].probability * 100)}%
-          </Text>
+          {plantData.result?.classification?.suggestions?.length > 0 &&
+          plantData.result.classification.suggestions[0].probability > 0.45 ? (
+            <>
+              <Text style={styles.plantName}>
+                Nom: {plantData.result.classification.suggestions[0].name}
+              </Text>
+              <Text>
+                Confiance: {Math.round(plantData.result.classification.suggestions[0].probability * 100)}%
+              </Text>
+            </>
+          ) : (
+            <>
+              <Text style={styles.plantName}>Plante non-reconnue</Text>
+              <Text>Confiance: n/a</Text>
+            </>
+          )}
         </View>
       )}
     </ScrollView>
@@ -114,19 +124,19 @@ export default function CameraComponent() {
 }
 
 const styles = StyleSheet.create({
-  container: { 
-    flexGrow: 1,  // Permet à ScrollView de se développer pour couvrir l'écran
-    justifyContent: "center", 
+  container: {
+    flexGrow: 1,  // Allows ScrollView to expand to cover the screen
+    justifyContent: "center",
     alignItems: "center",
-    paddingBottom: 20, // Ajouter un padding si nécessaire
+    paddingBottom: 20, // Add padding if necessary
   },
   message: { textAlign: "center", paddingBottom: 10 },
-  camera: { width: 300, height: 300 }, // Ajuste la taille pour bien afficher la caméra
+  camera: { width: 300, height: 300 }, // Adjust size to properly display the camera
   controls: { flexDirection: "row", justifyContent: "space-around", width: "100%", padding: 20 },
   button: { backgroundColor: "blue", padding: 10, borderRadius: 5 },
   text: { fontSize: 18, color: "white" },
   photo: {
-    marginTop: 20, // Un petit espace entre la caméra et l'image
+    marginTop: 20, // Small space between the camera and the image
     width: 300,
     height: 300,
     borderRadius: 10,
