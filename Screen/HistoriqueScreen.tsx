@@ -22,7 +22,7 @@ const Historique: React.FC = () => {
 
   const chargerHistorique = async () => {
     try {
-      const response = await axios.get("http://192.168.1.162:5000/get_historique");
+      const response = await axios.get("http://172.20.10.14:5000/get_historique");
       if (response.status === 200) {
         setDataHistorique(response.data);
       }
@@ -46,7 +46,7 @@ const Historique: React.FC = () => {
       };
 
       const response = await axios.post(
-        "http://192.168.1.162:5000/add_historique",
+        "http://172.20.10.14:5000/add_historique",
         nouvelleEntree
       );
 

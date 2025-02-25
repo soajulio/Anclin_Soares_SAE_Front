@@ -99,11 +99,14 @@ export default function CameraComponent() {
       )}
 
       {/* Affichage des données de la plante si disponibles */}
-      {plantData && (
+      {plantData && plantData.result?.classification?.suggestions?.length > 0 && (
         <View style={styles.plantInfo}>
-          <Text style={styles.plantName}>Nom: {plantData?.plantName}</Text>
-          <Text>Confiance: {plantData?.probability}</Text>
-          {/* Affiche d'autres informations ici si nécessaire */}
+          <Text style={styles.plantName}>
+            Nom: {plantData.result.classification.suggestions[0].name}
+          </Text>
+          <Text>
+            Confiance: {Math.round(plantData.result.classification.suggestions[0].probability * 100)}%
+          </Text>
         </View>
       )}
     </ScrollView>

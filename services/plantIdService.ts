@@ -38,6 +38,9 @@ export const identifyPlant = async (imageUri: string) => {
         "Content-Type": "application/json",
         "Api-Key": PLANT_ID_API_KEY,
       },
+      params: {
+        language: "fr", // Réponse en fr
+      },
     });
 
     return response.data;
