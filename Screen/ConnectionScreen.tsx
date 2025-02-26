@@ -60,11 +60,7 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
     setAlertMessage('');
 
     try {
-      const response = await axios.post('http://172.20.10.14:5000/check_credentials', {
-        username: username,
-        password: password,
-      });
-
+      const response = await axios.post(url, { username, password });
       if (response.status === 200) {
         setAlertMessage('Connexion réussie !');
         setIsConnected(true);
@@ -97,12 +93,7 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
     setAlertMessage('');
 
     try {
-      const response = await axios.post('http://172.20.10.14:5000/add_user', {
-        username: username,
-        password: password,
-        email: email,
-      });
-    
+      const response = await axios.post(url, { username, password, email });
       if (response.status === 201) {
         setAlertMessage('Utilisateur créé avec succès !');
         setTimeout(() => {

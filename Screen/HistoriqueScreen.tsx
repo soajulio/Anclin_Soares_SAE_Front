@@ -1,19 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, FlatList, Image, TouchableOpacity, Alert, LayoutAnimation, UIManager, Platform } from "react-native";
+import { 
+  Text, View, ScrollView, Image, TouchableOpacity, LayoutAnimation, Linking, RefreshControl, Alert 
+} from "react-native";
 import { styles } from "../styles/styles";
 import axios from "axios";
 import Collapsible from 'react-native-collapsible';
-
-// Images locales avec require()
-const images = {
-  rose: require("../assets/images/rose.jpg"),
-  orchidee: require("../assets/images/orchidee.jpg"),
-  tulipe: require("../assets/images/tulipe.jpg"),
-};
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import MapView, { Marker } from "react-native-maps";
 
 const Historique: React.FC = () => {
   const [dataHistorique, setDataHistorique] = useState<any[]>([]);
   const [activeSections, setActiveSections] = useState<number[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+  const [serverIp, setServerIp] = useState<string | null>(null);
 
   useEffect(() => {
     const chargerIP = async () => {
@@ -38,8 +37,10 @@ const Historique: React.FC = () => {
   }, [serverIp]);
 
   const chargerHistorique = async () => {
+    if (!serverIp) return;
+    setRefreshing(true);
     try {
-      const response = await axios.get("http://172.20.10.14:5000/get_historique");
+      const response = await axios.get(`http://${serverIp}:5000/get_historique`);
       if (response.status === 200) {
         setDataHistorique(response.data);
       }
@@ -59,78 +60,99 @@ const Historique: React.FC = () => {
     );
   };
 
-  const renderItem = ({ item, index }: any) => {
-  console.log("Image Base64 : ", item.image?.substring(0, 50));
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+    return `${day}/${month}/${year} à ${hours}:${minutes}`;
+  };
 
-  // Détection du type d'image
-  const imageUri = item.image
-    ? item.image.startsWith("/9j/")  // JPEG commence  par /9j/
-      ? `data:image/jpeg;base64,${item.image}`
-      : `data:image/png;base64,${item.image}`
-    : null;
-
-  return (
-    <View style={styles.itemContainer}>
-      <TouchableOpacity onPress={() => toggleSection(index)}>
-        <Text style={styles.nomPlante}>{item.plante_nom}</Text>
-      </TouchableOpacity>
-      <Collapsible collapsed={!activeSections.includes(index)}>
-        <Text style={styles.details}>Latitude : {item.latitude}</Text>
-        <Text style={styles.details}>Longitude : {item.longitude}</Text>
-        <Text style={styles.details}>Score : {item.prediction_score}</Text>
-        <Text style={styles.details}>URL : {item.url}</Text>
-        {imageUri ? (
-          <Image
-            source={{ uri: imageUri }}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        ) : (
-          <Text style={styles.alertText}>Image non disponible</Text>
-        )}
-      </Collapsible>
-    </View>
-  );
-};
-
-
-  const renderHeader = () => (
-    <View style={styles.headerContainer}>
-      <Text style={styles.title}>Ajouter dans la base de données</Text>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => ajouterDansLaBase("Rose", images.rose)}
-      >
-        <Text style={styles.buttonText}>Ajouter Rose</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => ajouterDansLaBase("Orchidée", images.orchidee)}
-      >
-        <Text style={styles.buttonText}>Ajouter Orchidée</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => ajouterDansLaBase("Tulipe", images.tulipe)}
-      >
-        <Text style={styles.buttonText}>Ajouter Tulipe</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.title}>Historique des identifications</Text>
-    </View>
-  );
+  const handleUrlPress = (url: string) => {
+    Linking.openURL(url).catch((err) => console.error("Erreur lors de l'ouverture de l'URL : ", err));
+  };
 
   return (
-    <FlatList
-      data={dataHistorique}
-      renderItem={renderItem}
-      keyExtractor={(item, index) => index.toString()}
-      ListHeaderComponent={renderHeader} 
-      contentContainerStyle={styles.container}
-    />
+    <ScrollView
+      contentContainerStyle={{ paddingBottom: 20 }}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={chargerHistorique} />
+      }
+      collapsable={false} 
+    >
+      <View style={styles.headerContainer}>
+        <Text style={styles.title}>Historique des identifications</Text>
+      </View>
+
+      {dataHistorique.map((item, index) => {
+        const imageUri = item.image
+          ? item.image.startsWith("/9j/")  
+            ? `data:image/jpeg;base64,${item.image}`
+            : `data:image/png;base64,${item.image}`
+          : null;
+
+        const scorePercentage = (item.prediction_score * 100).toFixed(1);
+
+        return (
+          <View key={index} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => toggleSection(index)}>
+              <Text style={styles.nomPlante}>
+                {`${formatDate(item.timestamp)} \n${item.plante_nom}`}
+              </Text>
+            </TouchableOpacity>
+
+            <Collapsible collapsed={!activeSections.includes(index)}>
+              {/* Carte remplaçant les textes de latitude et longitude */}
+              {item.latitude && item.longitude && (
+                <View style={{ height: 200, width: "100%", marginVertical: 10 }}>
+                  <MapView
+                    style={{ flex: 1 }}
+                    initialRegion={{
+                      latitude: parseFloat(item.latitude),
+                      longitude: parseFloat(item.longitude),
+                      latitudeDelta: 0.01, // Zoom plus serré
+                      longitudeDelta: 0.01,
+                    }}
+                  >
+                    <Marker
+                      coordinate={{
+                        latitude: parseFloat(item.latitude),
+                        longitude: parseFloat(item.longitude),
+                      }}
+                      title={item.plante_nom}
+                      description={`Score : ${scorePercentage}%`}
+                    />
+                  </MapView>
+                </View>
+              )}
+
+              <Text style={styles.details}>Score : {scorePercentage}%</Text>
+
+              {imageUri ? (
+                <Image
+                  source={{ uri: imageUri }}
+                  style={styles.image}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Text style={styles.alertText}>Image non disponible</Text>
+              )}
+
+              {item.url && item.url !== "None" && (
+                <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
+                  <Text style={[styles.details, { color: 'blue', textDecorationLine: 'underline' }]}>
+                    Voir image de la fleur prédite
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </Collapsible>
+          </View>
+        );
+      })}
+    </ScrollView>
   );
 };
 
