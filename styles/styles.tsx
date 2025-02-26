@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e0ebeb', 
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 60,
@@ -13,11 +13,28 @@ export const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#444',
     marginBottom: 20,
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   subtitle: {
     fontSize: 22,
     color: '#555',
     marginBottom: 20,
+  },
+  logoutButton: {
+    backgroundColor: '#ff4d4d',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginBottom: 15,
+    elevation: 3,
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
   },
   form: {
     width: '80%',
@@ -37,12 +54,6 @@ export const styles = StyleSheet.create({
     color: 'red',
     fontWeight: 'bold',
   },
-  logoutText: {
-    color: 'red',
-    textDecorationLine: 'underline',
-    marginBottom: 10,
-    textAlign: 'center'
-  },
   itemContainer: {
     backgroundColor: "#fff",
     padding: 20,
@@ -57,14 +68,20 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   nomPlante: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#333",
+    fontSize: 24,
+    fontWeight: "bold", 
+    color: "#222",
+    marginBottom: 5,
+  },
+  dateHeure: {
+    fontSize: 18,
+    color: "#555",
     marginBottom: 10,
+    fontWeight: "normal", 
   },
   details: {
-    color: "#666",
-    fontSize: 16,
+    fontSize: 18,
+    color: "#555",
     marginBottom: 5,
   },
   button: {
@@ -86,8 +103,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 25,
     backgroundColor: '#f9f9f9',
-    borderBottomColor: '#ddd',
-    borderBottomWidth: 1,
+    borderBottomColor: '#444', 
+    borderBottomWidth: 2,
     paddingTop: 50,
   },
   image: {

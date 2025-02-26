@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Text, View, ScrollView, Image, TouchableOpacity, LayoutAnimation, Linking, RefreshControl, Alert 
+import {
+  Text, View, ScrollView, Image, TouchableOpacity, LayoutAnimation, Linking, RefreshControl, Alert
 } from "react-native";
 import { styles } from "../styles/styles";
 import axios from "axios";
@@ -67,7 +67,7 @@ const Historique: React.FC = () => {
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-  
+
     return `${day}/${month}/${year} à ${hours}:${minutes}`;
   };
 
@@ -76,83 +76,83 @@ const Historique: React.FC = () => {
   };
 
   return (
-    <ScrollView
-      contentContainerStyle={{ paddingBottom: 20 }}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={chargerHistorique} />
-      }
-      collapsable={false} 
-    >
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>Historique des identifications</Text>
-      </View>
+    <View style={[styles.container, { backgroundColor: '#e0ebeb' }]}>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 20 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={chargerHistorique} />
+        }
+        collapsable={false}
+      >
+        <View style={styles.headerContainer}>
+          <Text style={styles.title}>Historique des identifications</Text>
+        </View>
 
-      {dataHistorique.map((item, index) => {
-        const imageUri = item.image
-          ? item.image.startsWith("/9j/")  
-            ? `data:image/jpeg;base64,${item.image}`
-            : `data:image/png;base64,${item.image}`
-          : null;
+        {dataHistorique.map((item, index) => {
+          const imageUri = item.image
+            ? item.image.startsWith("/9j/")
+              ? `data:image/jpeg;base64,${item.image}`
+              : `data:image/png;base64,${item.image}`
+            : null;
 
-        const scorePercentage = (item.prediction_score * 100).toFixed(1);
+          const scorePercentage = (item.prediction_score * 100).toFixed(1);
 
-        return (
-          <View key={index} style={styles.itemContainer}>
-            <TouchableOpacity onPress={() => toggleSection(index)}>
-              <Text style={styles.nomPlante}>
-                {`${formatDate(item.timestamp)} \n${item.plante_nom}`}
-              </Text>
-            </TouchableOpacity>
+          return (
+            <View key={index} style={styles.itemContainer}>
+              <TouchableOpacity onPress={() => toggleSection(index)}>
+                <Text style={styles.dateHeure}>{formatDate(item.timestamp)}</Text>
+                <Text style={styles.nomPlante}>{item.plante_nom}</Text>
+              </TouchableOpacity>
 
-            <Collapsible collapsed={!activeSections.includes(index)}>
-              {/* Carte remplaçant les textes de latitude et longitude */}
-              {item.latitude && item.longitude && (
-                <View style={{ height: 200, width: "100%", marginVertical: 10 }}>
-                  <MapView
-                    style={{ flex: 1 }}
-                    initialRegion={{
-                      latitude: parseFloat(item.latitude),
-                      longitude: parseFloat(item.longitude),
-                      latitudeDelta: 0.01, // Zoom plus serré
-                      longitudeDelta: 0.01,
-                    }}
-                  >
-                    <Marker
-                      coordinate={{
+              <Collapsible collapsed={!activeSections.includes(index)}>
+                {item.latitude && item.longitude && (
+                  <View style={{ height: 200, width: "100%", marginVertical: 10 }}>
+                    <MapView
+                      style={{ flex: 1 }}
+                      initialRegion={{
                         latitude: parseFloat(item.latitude),
                         longitude: parseFloat(item.longitude),
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
                       }}
-                      title={item.plante_nom}
-                      description={`Score : ${scorePercentage}%`}
-                    />
-                  </MapView>
-                </View>
-              )}
+                    >
+                      <Marker
+                        coordinate={{
+                          latitude: parseFloat(item.latitude),
+                          longitude: parseFloat(item.longitude),
+                        }}
+                        title={item.plante_nom}
+                        description={`Score : ${scorePercentage}%`}
+                      />
+                    </MapView>
+                  </View>
+                )}
 
-              <Text style={styles.details}>Score : {scorePercentage}%</Text>
+                <Text style={styles.details}>Score : {scorePercentage}%</Text>
 
-              {imageUri ? (
-                <Image
-                  source={{ uri: imageUri }}
-                  style={styles.image}
-                  resizeMode="contain"
-                />
-              ) : (
-                <Text style={styles.alertText}>Image non disponible</Text>
-              )}
+                {imageUri ? (
+                  <Image
+                    source={{ uri: imageUri }}
+                    style={styles.image}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <Text style={styles.alertText}>Image non disponible</Text>
+                )}
 
-              {item.url && item.url !== "None" && (
-                <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
-                  <Text style={[styles.details, { color: 'blue', textDecorationLine: 'underline' }]}>
-                    Voir image de la fleur prédite
-                  </Text>
-                </TouchableOpacity>
-              )}
-            </Collapsible>
-          </View>
-        );
-      })}
-    </ScrollView>
+                {item.url && item.url !== "None" && (
+                  <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
+                    <Text style={[styles.details, { color: 'blue', textDecorationLine: 'underline' }]}>
+                      Voir image de la fleur prédite
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </Collapsible>
+            </View>
+          );
+        })}
+      </ScrollView>
+    </View>
   );
 };
 

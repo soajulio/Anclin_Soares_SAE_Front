@@ -119,7 +119,7 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{isSignup ? 'Créer un compte' : 'Connexion'}</Text>
-      <Text>IP du serveur : {serverIp || "Non définie"}</Text>
+      {/* <Text>IP du serveur : {serverIp || "Non définie"}</Text> */}
       <View style={styles.form}>
         <TextInput
           style={styles.input}
