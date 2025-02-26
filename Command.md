@@ -31,11 +31,8 @@ npm install react-native-dotenv
 # Menu déroulant
 npx expo install react-native-collapsible
 
-<<<<<<< HEAD:Commande.md
 
 npm install react-native-paper
 
-=======
 # Carte pour l'historique
 npm install react-native-maps
->>>>>>> julio:Command.md

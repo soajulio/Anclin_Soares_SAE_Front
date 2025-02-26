@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Text, View, ScrollView, Image, TouchableOpacity, LayoutAnimation, Linking, RefreshControl, Alert 
+import {
+  Text, View, ScrollView, Image, TouchableOpacity, LayoutAnimation, Linking, RefreshControl, Alert
 } from "react-native";
 import { styles } from "../styles/styles";
 import axios from "axios";
@@ -67,7 +67,7 @@ const Historique: React.FC = () => {
     const year = date.getFullYear();
     const hours = date.getHours().toString().padStart(2, '0');
     const minutes = date.getMinutes().toString().padStart(2, '0');
-  
+
     return `${day}/${month}/${year} à ${hours}:${minutes}`;
   };
 
@@ -81,7 +81,7 @@ const Historique: React.FC = () => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={chargerHistorique} />
       }
-      collapsable={false} 
+      collapsable={false}
     >
       <View style={styles.headerContainer}>
         <Text style={styles.title}>Historique des identifications</Text>
@@ -89,7 +89,7 @@ const Historique: React.FC = () => {
 
       {dataHistorique.map((item, index) => {
         const imageUri = item.image
-          ? item.image.startsWith("/9j/")  
+          ? item.image.startsWith("/9j/")
             ? `data:image/jpeg;base64,${item.image}`
             : `data:image/png;base64,${item.image}`
           : null;
@@ -99,9 +99,8 @@ const Historique: React.FC = () => {
         return (
           <View key={index} style={styles.itemContainer}>
             <TouchableOpacity onPress={() => toggleSection(index)}>
-              <Text style={styles.nomPlante}>
-                {`${formatDate(item.timestamp)} \n${item.plante_nom}`}
-              </Text>
+              <Text style={styles.dateHeure}>{formatDate(item.timestamp)}</Text>
+              <Text style={styles.nomPlante}>{item.plante_nom}</Text>
             </TouchableOpacity>
 
             <Collapsible collapsed={!activeSections.includes(index)}>
