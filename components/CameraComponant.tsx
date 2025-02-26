@@ -2,7 +2,7 @@ import { CameraView, CameraType, useCameraPermissions } from "expo-camera";
 import { useState, useRef } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, Image, ScrollView } from "react-native";
 import * as FileSystem from 'expo-file-system';
-import { identifyPlant } from "../services/plantIdService";
+import { identifyPlant } from "../services/backendService";
 
 export default function CameraComponent() {
   const [facing, setFacing] = useState<CameraType>("back");
