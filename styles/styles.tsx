@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e0ebeb', 
     alignItems: 'center',
     justifyContent: 'flex-start',
     paddingTop: 60,
@@ -69,7 +69,7 @@ export const styles = StyleSheet.create({
   },
   nomPlante: {
     fontSize: 24,
-    fontWeight: "bold", // Keep the plant name in bold
+    fontWeight: "bold", 
     color: "#222",
     marginBottom: 5,
   },
@@ -77,7 +77,7 @@ export const styles = StyleSheet.create({
     fontSize: 18,
     color: "#555",
     marginBottom: 10,
-    fontWeight: "normal", // Ensure the date is not in bold
+    fontWeight: "normal", 
   },
   details: {
     fontSize: 18,
@@ -103,8 +103,8 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingVertical: 25,
     backgroundColor: '#f9f9f9',
-    borderBottomColor: '#ddd',
-    borderBottomWidth: 1,
+    borderBottomColor: '#444', 
+    borderBottomWidth: 2,
     paddingTop: 50,
   },
   image: {
