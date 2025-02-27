@@ -67,6 +67,11 @@ export const identifyPlant = async (imageUri: string) => {
     // Sauvegarder dans la base de données seulement si le score de prédiction est supérieur à 45%
     if (predictionScore > 0.45) {
         try {
+          const userId = await AsyncStorage.getItem("user_id");
+          if (!userId) {
+            console.error("Aucun ID utilisateur trouvé.");
+            return;
+          }
           await axios.post(HISTORIQUE_API_URL, {
             plante_nom: planteNom,
             latitude,
@@ -74,6 +79,7 @@ export const identifyPlant = async (imageUri: string) => {
             prediction_score: predictionScore,
             image: imageBase64,
             url: imageUrl,
+            user_id: parseInt(userId, 10), // Inclure l'ID de l'utilisateur
           });
   
           console.log("Successfully added to history.");

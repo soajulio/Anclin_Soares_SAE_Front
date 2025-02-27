@@ -67,7 +67,6 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
         // Stocker l'ID de l'utilisateur
         const userId = response.data.user_id;
         await AsyncStorage.setItem("user_id", userId.toString());
-        console.log(userId);
         navigation.navigate('Historique');
       }
     } catch (error) {
