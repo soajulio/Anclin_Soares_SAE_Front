@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     color: '#444',
-    marginBottom: 20,
     textShadowColor: 'rgba(0, 0, 0, 0.2)',
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
@@ -72,6 +71,7 @@ export const styles = StyleSheet.create({
     elevation: 5,
     width: "90%",
     alignSelf: 'center',
+    marginTop: 20,
   },
   nomPlante: {
     fontSize: 24,
