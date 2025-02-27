@@ -29,7 +29,7 @@ Pas besoin d'un fichier `.env` à la racine du projet.
 
 3. **Scanner le QR Code** :
    - Une fois le QR code affiché dans le terminal, scannez-le avec votre téléphone.
-   - L'application Expo Go s'ouvrira automatiquement et lancera votre projet.
+   - L'application Expo Go s'ouvrira automatiquement et lancera notre projet.
 
 ### Installer Expo Go et Lancer le Serveur
 
@@ -40,14 +40,12 @@ Pas besoin d'un fichier `.env` à la racine du projet.
      ```
    - Notez l'adresse IP sous *Carte réseau sans fil Wi-Fi* puis *Adresse IPv4*.
 
-2. **Configurer l'Application Expo Go** :
+2. **Configurer l'Application pour se connecter à l'API** :
    - Ouvrez l'application Expo Go sur votre téléphone.
+   - Si ce n'est pas déjà fais, entrer dans notre projet.
    - Naviguez vers les *Paramètres*.
    - Entrez manuellement l'adresse IP que vous avez récupérée.
 
-3. **Lancer l'Application Connectée à l'API** :
-   - Une fois le QR code affiché dans le terminal, scannez-le avec votre téléphone.
-   - L'application Expo Go s'ouvrira automatiquement et lancera votre projet.
 
 
 
