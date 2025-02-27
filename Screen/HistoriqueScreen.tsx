@@ -75,6 +75,18 @@ const Historique: React.FC = () => {
     Linking.openURL(url).catch((err) => console.error("Erreur lors de l'ouverture de l'URL : ", err));
   };
 
+  const supprimerHistorique = async (id: number) => {
+    if (!serverIp) return;
+    try {
+      const response = await axios.delete(`http://${serverIp}:5000/delete_historique/${id}`);
+      if (response.status === 200) {
+        setDataHistorique((prevData) => prevData.filter((item) => item.id !== id));
+      }
+    } catch (error) {
+      console.error("Erreur lors de la suppression de l'historique : ", error);
+    }
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: '#e0ebeb' }]}>
       <ScrollView
@@ -143,10 +155,16 @@ const Historique: React.FC = () => {
                 {item.url && item.url !== "None" && (
                   <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
                     <Text style={[styles.details, { color: 'blue', textDecorationLine: 'underline' }]}>
-                      Voir image de la fleur prédite
+                      Voir l'image de la fleur prédite
                     </Text>
                   </TouchableOpacity>
                 )}
+
+                <TouchableOpacity onPress={() => supprimerHistorique(item.id)}>
+                  <Text style={[styles.details, { color: 'red', textDecorationLine: 'underline' }]}>
+                    Supprimer
+                  </Text>
+                </TouchableOpacity>
               </Collapsible>
             </View>
           );

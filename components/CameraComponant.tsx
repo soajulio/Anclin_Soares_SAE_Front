@@ -86,10 +86,10 @@ export default function CameraComponent() {
       {/* Buttons */}
       <View style={styles.controls}>
         <TouchableOpacity onPress={toggleCameraFacing} style={styles.button}>
-          <Text style={styles.text}>Flip Camera</Text>
+          <Text style={styles.text}>Retourner caméra</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={takePicture} style={styles.button}>
-          <Text style={styles.text}>Take Picture</Text>
+          <Text style={styles.text}>Prendre photo</Text>
         </TouchableOpacity>
       </View>
 
@@ -113,8 +113,8 @@ export default function CameraComponent() {
             </>
           ) : (
             <>
-              <Text style={styles.plantName}>Plante non-reconnue</Text>
-              <Text>Confiance: n/a</Text>
+              <Text style={styles.plantName}>Plante: non-reconnue</Text>
+              <Text style={styles.plantName}>Confiance: n/a</Text>
             </>
           )}
         </View>
