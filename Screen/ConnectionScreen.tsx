@@ -117,7 +117,7 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.containerCH}>
       <Text style={styles.title}>{isSignup ? 'Créer un compte' : 'Connexion'}</Text>
       {/* <Text>IP du serveur : {serverIp || "Non définie"}</Text> */}
       <View style={styles.form}>

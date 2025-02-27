@@ -17,9 +17,9 @@ const ParametreScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.containerCH}>
       <Text style={styles.title}>Paramètres</Text>
-      <Text>Adresse IP du serveur :</Text>
+      <Text style={styles.subtitle}>Adresse IP du serveur :</Text>
       <TextInput
         style={styles.input}
         value={ipAdresse}
