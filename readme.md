@@ -2,13 +2,13 @@
 
 ## Sujet Alternant - Partie Front-end
 
-### Configuration du Projet
+## Configuration du Projet
 
-#### Fichier `.env`
+### Fichier `.env`
 
 Pas besoin d'un fichier `.env` à la racine du projet.
 
-### Commandes d'installation pour lancer correctement le projet
+## Commandes d'installation pour lancer correctement le projet
 
 
 
