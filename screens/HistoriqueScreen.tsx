@@ -40,7 +40,14 @@ const Historique: React.FC = () => {
     if (!serverIp) return;
     setRefreshing(true);
     try {
-      const response = await axios.get(`http://${serverIp}:5000/get_historique`);
+      const userId = await AsyncStorage.getItem("user_id");
+      if (!userId) {
+        console.error("Aucun ID utilisateur trouvé.");
+        setRefreshing(false);
+        return;
+      }
+  
+      const response = await axios.get(`http://${serverIp}:5000/get_historique/${userId}`);
       if (response.status === 200) {
         setDataHistorique(response.data);
       }
@@ -49,7 +56,7 @@ const Historique: React.FC = () => {
     } finally {
       setRefreshing(false);
     }
-  };
+  };  
 
   const toggleSection = (index: number) => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);

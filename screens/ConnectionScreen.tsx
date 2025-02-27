@@ -64,6 +64,10 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
       if (response.status === 200) {
         setAlertMessage('Connexion réussie !');
         setIsConnected(true);
+        // Stocker l'ID de l'utilisateur
+        const userId = response.data.user_id;
+        await AsyncStorage.setItem("user_id", userId.toString());
+        console.log(userId);
         navigation.navigate('Historique');
       }
     } catch (error) {
