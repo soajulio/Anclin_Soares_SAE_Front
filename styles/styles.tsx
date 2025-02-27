@@ -28,7 +28,7 @@ export const styles = StyleSheet.create({
     color: '#555',
     marginBottom: 20,
   },
-  logoutButton: {
+  redButton: {
     backgroundColor: '#ff4d4d',
     paddingVertical: 10,
     paddingHorizontal: 20,
@@ -36,7 +36,21 @@ export const styles = StyleSheet.create({
     marginBottom: 15,
     elevation: 3,
   },
-  logoutText: {
+  redButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  blueButton: {
+    backgroundColor: 'blue',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    marginBottom: 15,
+    elevation: 3,
+  },
+  blueButtonText: {
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
@@ -88,7 +102,9 @@ export const styles = StyleSheet.create({
   },
   details: {
     fontSize: 18,
+    fontWeight: 'bold',
     color: "#555",
+    textShadowColor: 'rgba(0, 0, 0, 0.2)',
     marginBottom: 5,
   },
   button: {

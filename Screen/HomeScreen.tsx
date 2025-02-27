@@ -25,13 +25,13 @@ const HomeScreen: React.FC<Props> = ({ navigation }) => {
             />
 
             {isConnected && (
-                <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-                    <Text style={styles.logoutText}>Se déconnecter</Text>
+                <TouchableOpacity onPress={handleLogout} style={styles.redButton}>
+                    <Text style={styles.redButtonText}>Se déconnecter</Text>
                 </TouchableOpacity>
             )}
             <Text style={styles.title}>Bienvenue</Text>
             <Text style={styles.subtitle}>
-                {isConnected ? "Vous êtes connecté" : "Vous n'êtes pas connecté"}
+                {isConnected ? "Vous êtes connecté(e)" : "Vous n'êtes pas connecté(e)"}
             </Text>
             <CameraComponent />
         </View>

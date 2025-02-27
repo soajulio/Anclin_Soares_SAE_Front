@@ -120,12 +120,15 @@ const Historique: React.FC = () => {
                 {item.latitude && item.longitude && (
                   <View style={{ height: 200, width: "100%", marginVertical: 10 }}>
                     <MapView
-                      style={{ flex: 1 }}
+                      style={{ flex: 1, height: 200, width: "100%", borderRadius: 15 }}
+                      scrollEnabled={false}  // Désactive le déplacement
+                      zoomEnabled={false}    // Désactive le zoom
+                      rotateEnabled={false}  // Désactive la rotation
                       initialRegion={{
                         latitude: parseFloat(item.latitude),
                         longitude: parseFloat(item.longitude),
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01,
+                        latitudeDelta: 0.07,  // Augmente la zone affichée (plus reculé)
+                        longitudeDelta: 0.05, 
                       }}
                     >
                       <Marker
@@ -153,18 +156,19 @@ const Historique: React.FC = () => {
                 )}
 
                 {item.url && item.url !== "None" && (
-                  <TouchableOpacity onPress={() => handleUrlPress(item.url)}>
-                    <Text style={[styles.details, { color: 'blue', textDecorationLine: 'underline' }]}>
+                  <TouchableOpacity style={styles.blueButton} onPress={() => handleUrlPress(item.url)}>
+                    <Text style={styles.blueButtonText}>
                       Voir l'image de la fleur prédite
                     </Text>
                   </TouchableOpacity>
                 )}
 
-                <TouchableOpacity onPress={() => supprimerHistorique(item.id)}>
-                  <Text style={[styles.details, { color: 'red', textDecorationLine: 'underline' }]}>
+                <TouchableOpacity style={styles.redButton} onPress={() => supprimerHistorique(item.id)}>
+                  <Text style={styles.redButtonText}>
                     Supprimer
                   </Text>
                 </TouchableOpacity>
+
               </Collapsible>
             </View>
           );
