@@ -11,9 +11,14 @@ Pas besoin d'un fichier `.env` à la racine du projet.
 ## Commandes d'installation pour lancer correctement le projet
 
 
-
-
-
+#### installer les dépendances nécessaires
+```bash
+  npm install
+```
+#### Installer la carte pour l'historique
+```bash
+  npm install react-native-maps
+```
 
 ## Instructions pour Lancer l'Application
 ### Installer Expo Go et Lancer le Serveur
@@ -46,6 +51,11 @@ Pas besoin d'un fichier `.env` à la racine du projet.
    - Naviguez vers les *Paramètres*.
    - Entrez manuellement l'adresse IP que vous avez récupérée.
 
-
+## Visualiser l'historique
+Pour visualiser l'historique :
+- Naviguer dans l'onglet *Historique*.
+- Cliquer sur "*Pas de compte ? Créer un compte*".
+- Entrer un nom d'utilisateur, un mot de passe ainsi qu'un email.
+- Ensuite, se reconnecter avec l'utilisateur crée.
 
 
