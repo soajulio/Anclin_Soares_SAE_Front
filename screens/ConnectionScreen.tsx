@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, ActivityIndicator } from 'react-native';
+import { View, Text, TextInput, Button, ActivityIndicator, Alert } from 'react-native';
 import axios from 'axios';
 import { AppNavigationProp } from './types';
 import { styles } from '../styles/styles';
@@ -95,7 +95,7 @@ const Connexion: React.FC<Props> = ({ navigation }) => {
     try {
       const response = await axios.post(url, { username, password, email });
       if (response.status === 201) {
-        setAlertMessage('Utilisateur créé avec succès !');
+        Alert.alert("Succès", "Utilisateur créé avec succès !");
         setTimeout(() => {
           setIsSignup(false);
           setUsername('');
