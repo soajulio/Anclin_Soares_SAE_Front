@@ -1,10 +1,10 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import AppNavigator from './Screen/AppNavigator';
-import ConnectionScreen from './Screen/ConnectionScreen';
-import HistoriqueScreen from './Screen/HistoriqueScreen';
-import ParametreScreen from './Screen/ParametreScreen';
+import AppNavigator from './screens/AppNavigator';
+import ConnectionScreen from './screens/ConnectionScreen';
+import HistoriqueScreen from './screens/HistoriqueScreen';
+import ParametreScreen from './screens/ParametreScreen';
 import { AuthProvider } from './components/AuthContext';   
 import { ServerIpProvider } from './context/ServerIpContext'; // Assure-toi que l'import est correct !
 
