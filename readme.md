@@ -8,15 +8,15 @@
 
 Pas besoin d'un fichier `.env` à la racine du projet.
 
-#### Commandes d'installation pour lancer correctement le projet
+### Commandes d'installation pour lancer correctement le projet
 
 
 
 
 
 
-#### Instructions pour Lancer l'Application
-### Récupérer l'accès à notre api
+### Instructions pour Lancer l'Application
+## Récupérer l'accès à notre api
 1. **Télécharger Expo GO** :
    - **Android** : [Télécharger sur Google Play](https://play.google.com/store/apps/details?id=host.exp.exponent&hl=fr&pli=1)
    - **iOS** : [Télécharger sur l'App Store](https://apps.apple.com/fr/app/expo-go/id982107779)
@@ -31,7 +31,7 @@ Pas besoin d'un fichier `.env` à la racine du projet.
    - Une fois le QR code affiché dans le terminal, scannez-le avec votre téléphone.
    - L'application Expo Go s'ouvrira automatiquement et lancera notre projet.
 
-### Installer Expo Go et Lancer le Serveur
+## Installer Expo Go et Lancer le Serveur
 
 1. **Ouvrir un Terminal sur l'Ordinateur** :
    - Exécutez la commande suivante pour obtenir votre adresse IP :
