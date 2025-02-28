@@ -19,7 +19,7 @@ const AppNavigator: React.FC = () => {
       }}
     >
       <Tab.Screen
-        name="Home"
+        name="Accueil"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
