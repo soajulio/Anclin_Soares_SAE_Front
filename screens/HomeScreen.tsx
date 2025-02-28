@@ -1,19 +1,28 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Button, Text, View, TouchableOpacity, Image } from "react-native";
 import { AppNavigationProp } from "./types";
 import { styles } from "../styles/styles";
 import CameraComponent from "../components/CameraComponant";
 import { useAuth } from "../components/AuthContext";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Props = {
     navigation: AppNavigationProp;
 };
 
 const HomeScreen: React.FC<Props> = ({ navigation }) => {
+    useEffect(() => {
+        const setUserId = async () => {
+            await AsyncStorage.setItem("user_id", "2"); 
+        };
+
+        setUserId(); 
+    }, []); 
     const { isConnected, setIsConnected } = useAuth();
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         setIsConnected(false);
+        await AsyncStorage.setItem("user_id", "2"); 
     };
 
     return (
